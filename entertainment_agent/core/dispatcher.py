@@ -1,4 +1,5 @@
 from tools.gbooks_client import GBooksClient
+from tools.itunespod_client import iTunesPodClient
 from tools.lastfm_client import LastFMClient
 from tools.tmdb_client import TMDBClient
 
@@ -11,6 +12,7 @@ class ToolDispatcher:
         self.tmdb = TMDBClient()
         self.lastfm = LastFMClient()
         self.gbooks = GBooksClient()
+        self.itunespod = iTunesPodClient()
 
         self._dispatch_map = {
             "Movie": self._handle_tmdb,
@@ -18,7 +20,7 @@ class ToolDispatcher:
             "Album": self._handle_lastfm,
             "Song": self._handle_lastfm,
             "Book": self._handle_gbooks,
-            "Podcast": self._handle_placeholder
+            "Podcast": self._handle_itunespod
         }
 
     def _handle_tmdb(self, item):
@@ -30,9 +32,8 @@ class ToolDispatcher:
     def _handle_gbooks(self, item):
         return self.gbooks.fetch_metadata(item["title"], item["media_type"])
 
-    def _handle_placeholder(self, item):
-        logger.warning(f"No API tool currently implemented for {item['media_type']}")
-        return {"status": "provider_not_implemented"}
+    def _handle_itunespod(self, item):
+        return self.itunespod.fetch_metadata(item["title"], item["media_type"])
 
     def enrich_grid(self, taste_grid):
         """
