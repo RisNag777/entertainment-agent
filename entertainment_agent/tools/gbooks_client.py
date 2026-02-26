@@ -4,7 +4,7 @@ import requests
 
 logger = logging.getLogger("BooksTool")
 
-class BooksClient:
+class GBooksClient:
     def __init__(self):
         self.api_key = os.getenv("GBOOKS_API_KEY")
         self.base_url = "https://www.googleapis.com/books/v1/volumes"

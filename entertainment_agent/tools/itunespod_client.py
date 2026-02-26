@@ -3,7 +3,7 @@ import requests
 
 logger = logging.getLogger("PodcastTool")
 
-class PodcastClient:
+class iTunesPodClient:
     def __init__(self):
         # No API Key required for iTunes Search!
         self.base_url = "https://itunes.apple.com/search"
