@@ -185,3 +185,6 @@ Desktop.ini
 *.tmp
 *.bak
 *.backup
+
+# User-specific data
+data/

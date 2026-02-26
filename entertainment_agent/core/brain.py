@@ -1,6 +1,8 @@
 from dotenv import load_dotenv
 from openai import OpenAI
 
+from core.memory import MemoryManager
+
 import json
 import logging
 import os
@@ -22,19 +24,22 @@ class EntertainmentBrain:
             self.system_prompt = f.read()
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         logger.info(f"Brain initialized with model: {self.model}")
+        self.memory = MemoryManager()
 
-    def get_recommendation(self, user_input, memory_buffer):
+    def get_recommendation(self, user_input):
         logger.info(f"Processing user input...")
+        current_memory = self.memory.load()
         try:
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[
                     {"role": "system", "content": self.system_prompt},
-                    {"role": "user", "content": f"Memory: {json.dumps(memory_buffer)}\nInput: {user_input}"}
+                    {"role": "user", "content": f"Memory: {json.dumps(current_memory)}\nInput: {user_input}"}
                 ],
                 response_format={"type": "json_object"}
             )
             result = json.loads(response.choices[0].message.content)
+            self.memory.merge_and_save(result)
             logger.info("Successfully generated recommendation and memory update.")
             return result
         except Exception as e:
