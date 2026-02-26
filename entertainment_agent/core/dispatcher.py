@@ -1,3 +1,4 @@
+from tools.lastfm_client import LastFMClient
 from tools.tmdb_client import TMDBClient
 
 import logging
@@ -7,18 +8,22 @@ logger = logging.getLogger("ToolDispatcher")
 class ToolDispatcher:
     def __init__(self):
         self.tmdb = TMDBClient()
+        self.lastfm = LastFMClient()
 
         self._dispatch_map = {
             "Movie": self._handle_tmdb,
             "TV Show": self._handle_tmdb,
-            "Album": self._handle_placeholder,
-            "Song": self._handle_placeholder,
+            "Album": self._handle_lastfm,
+            "Song": self._handle_lastfm,
             "Book": self._handle_placeholder,
             "Podcast": self._handle_placeholder
         }
 
     def _handle_tmdb(self, item):
         return self.tmdb.fetch_metadata(item["title"], item["media_type"])
+
+    def _handle_lastfm(self, item):
+        return self.lastfm.fetch_metadata(item["title"], item["media_type"])
 
     def _handle_placeholder(self, item):
         logger.warning(f"No API tool currently implemented for {item['media_type']}")
