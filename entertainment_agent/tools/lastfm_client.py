@@ -63,7 +63,8 @@ class LastFMClient:
                     "official_title": track.get("name"),
                     "artist": track.get("artist"),
                     "url": track.get("url"),
-                    "listeners": track.get("listeners")
+                    "listeners": track.get("listeners"),
+                    "image": track.get("image")[-1].get("#text")
                 }
         except Exception as e:
             logger.error(f"Last.fm Track search failed: {e}")

@@ -8,13 +8,13 @@ class iTunesPodClient:
         # No API Key required for iTunes Search!
         self.base_url = "https://itunes.apple.com/search"
 
-    def fetch_metadata(self, title):
+    def fetch_metadata(self, title, media_type="podcast"):
         """
         Searches iTunes for a podcast title and returns the top match.
         """
         params = {
             "term": title,
-            "media": "podcast",
+            "media": media_type,
             "limit": 1
         }
         
@@ -36,8 +36,11 @@ class iTunesPodClient:
                 "genres": podcast.get("genres", []),
                 "feed_url": podcast.get("feedUrl"),
                 "itunes_url": podcast.get("collectionViewUrl"),
-                "artwork": podcast.get("artworkUrl600")
+                "image": podcast.get("artworkUrl600")
             }
         except Exception as e:
             logger.error(f"iTunes Podcast search failed for {title}: {e}")
             return None
+
+    def fetch_image(self, title, media_type):
+        return self.fetch_metadata(title, media_type)['image']

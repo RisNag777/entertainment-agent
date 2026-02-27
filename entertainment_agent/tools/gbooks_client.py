@@ -37,7 +37,8 @@ class GBooksClient:
                 "description": volume_info.get("description", "No description available."),
                 "page_count": volume_info.get("pageCount"),
                 "categories": volume_info.get("categories", []),
-                "preview_link": volume_info.get("previewLink")
+                "preview_link": volume_info.get("previewLink"),
+                "image": volume_info.get("imageLinks", {}).get("thumbnail")
             }
         except Exception as e:
             logger.error(f"Google Books search failed for {title}: {e}")

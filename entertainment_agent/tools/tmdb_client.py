@@ -39,7 +39,8 @@ class TMDBClient:
                 "overview": top_match.get("overview"),
                 "release_date": top_match.get("release_date") or top_match.get("first_air_date"),
                 "tmdb_id": top_match.get("id"),
-                "popularity": top_match.get("popularity")
+                "popularity": top_match.get("popularity"),
+                "image": f"https://image.tmdb.org/t/p/w500{top_match.get('poster_path')}" if top_match.get('poster_path') else None
             }
         except Exception as e:
             logger.error(f"TMDB search failed for {title}: {e}")

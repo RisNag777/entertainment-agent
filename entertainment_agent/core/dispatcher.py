@@ -20,7 +20,8 @@ class ToolDispatcher:
             "Album": self._handle_lastfm,
             "Song": self._handle_lastfm,
             "Book": self._handle_gbooks,
-            "Podcast": self._handle_itunespod
+            "Podcast": self._handle_itunespod,
+            "Image": self._handle_itunespod_image
         }
 
     def _handle_tmdb(self, item):
@@ -30,10 +31,18 @@ class ToolDispatcher:
         return self.lastfm.fetch_metadata(item["title"], item["media_type"])
 
     def _handle_gbooks(self, item):
-        return self.gbooks.fetch_metadata(item["title"], item["media_type"])
+        return self.gbooks.fetch_metadata(item["title"])
 
     def _handle_itunespod(self, item):
-        return self.itunespod.fetch_metadata(item["title"], item["media_type"])
+        return self.itunespod.fetch_metadata(item["title"])
+
+    def _handle_itunespod_image(self, item):
+        return self.itunespod.fetch_image(item["title"], item["media_type"])
+
+    def _handle_placeholder(self, item):
+        """Fallback handler for unknown media types."""
+        logger.warning(f"No handler found for media type: {item.get('media_type')}")
+        return None
 
     def enrich_grid(self, taste_grid):
         """
@@ -49,6 +58,10 @@ class ToolDispatcher:
             
             # Attach the real data to the recommendation
             item["metadata"] = metadata
+            if not item['metadata'].get('image'):
+                itunes_data = self._handle_itunespod_image(item['title'], media_type)
+                if itunes_data:
+                    item['metadata']['image'] = itunes_data.get('image')
             enriched_results.append(item)
             
         return enriched_results
